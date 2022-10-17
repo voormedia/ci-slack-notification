@@ -6,7 +6,13 @@ inputs:
     description: Slack webhook for the desired channel
     required: false
     default: ${{ secrets.SLACK_WEBHOOK }} # webhook to the CI channel
+  repo:
+    description: The owner and repository name where the workflow runs
+    required: true
+  run-id:
+    description: ID of the workflow run to notify about
+    required: true
 
 runs:
-  using: 'node16'
-  main: 'index.js'
+  using: "node16"
+  main: "dist/index.js"
