@@ -19,10 +19,8 @@ try {
   const wfRunId = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("run-id");
   const slackWebhook = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("slack-webhook");
 
-  console.log("Inputs");
-  console.log(`repo: ${repoOwner}/${repo}`);
-  console.log(`workflow-run-id: ${wfRunId}`);
-  console.log(`slack-webhook: ${slackWebhook}`);
+  console.log("Actions: ", _actions_github__WEBPACK_IMPORTED_MODULE_1__.actions);
+  console.log("Request: ", _actions_github__WEBPACK_IMPORTED_MODULE_1__.request);
 
   // Retrieve workflow run data
   const wfRun = await _actions_github__WEBPACK_IMPORTED_MODULE_1__.actions.getWorkflowRun({
