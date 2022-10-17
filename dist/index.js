@@ -9790,7 +9790,7 @@ try {
   // xhr.setRequestHeader("Content-Type", "application/json");
   // xhr.send(JSON.stringify(slackMessage));
 } catch (error) {
-  setFailed(error.message);
+  core.setFailed(error.message);
 }
 
 })();
