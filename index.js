@@ -4,28 +4,32 @@ const github = require("@actions/github");
 try {
   // const [repoOwner, repo] = getInput("repo").split("/");
   // const wfRunId = getInput("run-id");
-  // const slackWebhook = getInput("slack-webhook");
+  const slackWebhook = getInput("slack-webhook");
 
-  console.log(github.context);
+  console.log("Core: ", core);
+  console.log("Github: ", github);
 
-  // Retrieve workflow run data
-  // const wfRun = await actions.getWorkflowRun({
-  //   owner: repoOwner,
-  //   repo: repo,
-  //   run_id: wfRunId,
-  // });
-  // const jobsResponse = await request(wfRun.data.jobs_url);
+  // Parse workflow run data
+  const commitAuthor = github.context.actor;
+  const avatarUrl = github.context.payload.sender.avatar_url;
+  const repositoryUrl = github.context.payload.repository.url;
+  const repositoryName = github.context.payload.repository.full_name;
+  const branchName = github.context.ref.split("/").pop();
+  const branchUrl = repositoryUrl + "/tree/" + branchName;
+  const commitSha = github.context.sha;
+  const commitUrl = repositoryUrl + "/commit/" + commitSha;
+  const commitMessage = github.context.payload.head_commit.message;
 
-  // // Parse data for message fields
-  // const commitAuthor = wfRun.data.actor.login;
-  // const avatarUrl = wfRun.data.actor.avatarUrl;
-  // const repositoryUrl = wfRun.data.repository.html_url;
-  // const repositoryName = wfRun.data.repository.full_name;
-  // const branchName = wfRun.data.head_branch;
-  // const branchUrl = repositoryUrl + "/tree/" + branchName;
-  // const commitSha = wfRun.data.head_sha;
-  // const commitUrl = repositoryUrl + "/commit/" + commitSha;
-  // const commitMessage = wfRun.data.display_title;
+  console.log("------------------");
+  console.log("Commit Author: ", commitAuthor);
+  console.log("Avatar URL: ", avatarUrl);
+  console.log("Repository URL: ", repositoryUrl);
+  console.log("Repository Name: ", repositoryName);
+  console.log("Branch Name: ", branchName);
+  console.log("Branch URL: ", branchUrl);
+  console.log("Commit SHA: ", commitSha);
+  console.log("Commit URL: ", commitUrl);
+  console.log("Commit Message: ", commitMessage);
 
   // const failedJobs = jobsResponse.data.jobs.filter(
   //   (job) => job.status == "completed" && job.conclusion == "failure"
