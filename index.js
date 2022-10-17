@@ -3,7 +3,7 @@ import { actions, request } from "@actions/github";
 
 try {
   const [repoOwner, repo] = getInput("repo").split("/");
-  const wfRunId = getInput("workflow-run-id");
+  const wfRunId = getInput("run-id");
   const slackWebhook = getInput("slack-webhook");
 
   console.log("Inputs");

@@ -16,7 +16,7 @@ __nccwpck_require__.r(__webpack_exports__);
 
 try {
   const [repoOwner, repo] = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("repo").split("/");
-  const wfRunId = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("workflow-run-id");
+  const wfRunId = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("run-id");
   const slackWebhook = (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)("slack-webhook");
 
   console.log("Inputs");
