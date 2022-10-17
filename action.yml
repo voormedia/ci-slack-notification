@@ -1,0 +1,12 @@
+name: Slack notification
+description: Post job conclusions of a workflow to Slack
+
+inputs:
+  slack-webhook:
+    description: Slack webhook for the desired channel
+    required: false
+    default: ${{ secrets.SLACK_WEBHOOK }} # webhook to the CI channel
+
+runs:
+  using: 'node16'
+  main: 'index.js'
