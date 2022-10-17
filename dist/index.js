@@ -9690,7 +9690,7 @@ const github = __nccwpck_require__(3370);
 try {
   // const [repoOwner, repo] = getInput("repo").split("/");
   // const wfRunId = getInput("run-id");
-  const slackWebhook = getInput("slack-webhook");
+  const slackWebhook = core.getInput("slack-webhook");
 
   console.log("Core: ", core);
   console.log("Github: ", github);
@@ -9791,6 +9791,7 @@ try {
   // xhr.send(JSON.stringify(slackMessage));
 } catch (error) {
   core.setFailed(error.message);
+  console.log(error.message);
 }
 
 })();

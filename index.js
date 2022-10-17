@@ -4,7 +4,7 @@ const github = require("@actions/github");
 try {
   // const [repoOwner, repo] = getInput("repo").split("/");
   // const wfRunId = getInput("run-id");
-  const slackWebhook = getInput("slack-webhook");
+  const slackWebhook = core.getInput("slack-webhook");
 
   console.log("Core: ", core);
   console.log("Github: ", github);
