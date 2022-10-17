@@ -6,6 +6,11 @@ try {
   const wfRunId = getInput("workflow-run-id");
   const slackWebhook = getInput("slack-webhook");
 
+  console.log("Inputs");
+  console.log(`repo: ${repoOwner}/${repo}`);
+  console.log(`workflow-run-id: ${wfRunId}`);
+  console.log(`slack-webhook: ${slackWebhook}`);
+
   // Retrieve workflow run data
   const wfRun = await actions.getWorkflowRun({
     owner: repoOwner,
