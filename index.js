@@ -118,7 +118,7 @@ async function run() {
   // console.log("Slack message: ", JSON.stringify(slackMessage));
 
   // Send message to Slack
-  await new IncomingWebhook(slackWebhook).send(JSON.stringify(slackMessage));
+  await new IncomingWebhook(slackWebhook).send(slackMessage);
 }
 
 run().catch((error) => {

@@ -13040,7 +13040,7 @@ async function run() {
   // console.log("Slack message: ", JSON.stringify(slackMessage));
 
   // Send message to Slack
-  await new _slack_webhook__WEBPACK_IMPORTED_MODULE_2__/* .IncomingWebhook */ .QU(slackWebhook).send(JSON.stringify(slackMessage));
+  await new _slack_webhook__WEBPACK_IMPORTED_MODULE_2__/* .IncomingWebhook */ .QU(slackWebhook).send(slackMessage);
 }
 
 run().catch((error) => {
