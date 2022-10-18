@@ -9751,18 +9751,19 @@ async function run() {
   console.log(octokit);
 
   // Fetch workflow run data
-  const { data: wfRun } = await octokit.actions.getWorkflowRun({
+  const { data: wfRun } = await octokit.rest.actions.getWorkflowRun({
     owner: repoOwner,
     repo: repo,
     run_id: wfRunId,
   });
 
   // Fetch jobs data for the same workflow run
-  const { data: jobsResponse } = await octokit.actions.listJobsForWorkflowRun({
-    owner: repoOwner,
-    repo: repo,
-    run_id: wfRunId,
-  });
+  const { data: jobsResponse } =
+    await octokit.rest.actions.listJobsForWorkflowRun({
+      owner: repoOwner,
+      repo: repo,
+      run_id: wfRunId,
+    });
 
   console.log(wfRun);
   console.log(jobsResponse);
