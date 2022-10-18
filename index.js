@@ -16,6 +16,8 @@ async function run() {
   // Authenticate with GitHub
   const octokit = getOctokit(token);
 
+  console.log(octokit);
+
   // Fetch workflow run data
   const { data: wfRun } = await octokit.actions.getWorkflowRun({
     owner: repoOwner,
