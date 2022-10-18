@@ -1,5 +1,6 @@
 import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
+import { IncomingWebhook } from "@slack/webhook";
 
 async function run() {
   const token = core.getInput("token");
@@ -31,9 +32,6 @@ async function run() {
       run_id: wfRunId,
     });
 
-  console.log(wfRun);
-  console.log(jobsResponse);
-
   // Extract the data we need for creating the Slack message
   const commitAuthor = wfRun.actor.login;
   const avatarUrl = wfRun.actor.avatar_url;
@@ -52,11 +50,14 @@ async function run() {
     .join(", ");
 
   // Create Slack message
+  // For debugging: https://app.slack.com/block-kit-builder/
   const slackMessage = {
+    // We use attachments to keep the color bar on the left side
     attachments: [
       {
         color: `${failedJobs.length == 0 ? "good" : "danger"}`,
         blocks: [
+          // Author
           {
             type: "context",
             elements: [
@@ -71,6 +72,7 @@ async function run() {
               },
             ],
           },
+          // Repository
           {
             type: "section",
             text: {
@@ -78,6 +80,7 @@ async function run() {
               text: `<${repositoryUrl}|*${repositoryName}*>`,
             },
           },
+          // Branch
           {
             type: "section",
             text: {
@@ -85,6 +88,7 @@ async function run() {
               text: `*Branch:* <${branchUrl}|${branchName}>`,
             },
           },
+          // Commit
           {
             type: "section",
             text: {
@@ -92,6 +96,7 @@ async function run() {
               text: `*Commit:* ${commitMessage} (<${commitUrl}|${commitSha}>)`,
             },
           },
+          // Failled jobs (if any)
           {
             type: "section",
             text: {
@@ -109,14 +114,11 @@ async function run() {
     ],
   };
 
-  // For testing on Slack Block Kit Builder:
+  // For debugging on Slack Block Kit Builder:
   // console.log("Slack message: ", JSON.stringify(slackMessage));
 
   // Send message to Slack
-  var xhr = new XMLHttpRequest();
-  xhr.open("POST", slackWebhook, true);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.send(JSON.stringify(slackMessage));
+  await new IncomingWebhook(slackWebhook).send(JSON.stringify(slackMessage));
 }
 
 run().catch((error) => {
