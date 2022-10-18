@@ -2,6 +2,9 @@ name: Slack notification
 description: Post job conclusions of a workflow to Slack
 
 inputs:
+  token:
+    description: GH authentication token
+    required: true
   slack-webhook:
     description: Slack webhook for the desired channel
     required: true

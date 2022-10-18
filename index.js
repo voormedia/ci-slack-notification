@@ -6,12 +6,9 @@ async function run() {
   const token = core.getInput("token");
   const slackWebhook = core.getInput("slack-webhook");
 
-  console.log("Token: ", token);
-  console.log("Webhook: ", slackWebhook);
-
-  // Force as secret, forces *** when trying to print or log values
-  // core.setSecret(token);
-  // core.setSecret(slackWebhook);
+  // Mask values when logging
+  core.setSecret(token);
+  core.setSecret(slackWebhook);
 
   const repoOwner = context.repo.owner;
   const repo = context.repo.repo;

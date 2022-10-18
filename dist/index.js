@@ -9738,12 +9738,9 @@ async function run() {
   const token = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("token");
   const slackWebhook = _actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput("slack-webhook");
 
-  console.log("Token: ", token);
-  console.log("Webhook: ", slackWebhook);
-
-  // Force as secret, forces *** when trying to print or log values
-  // core.setSecret(token);
-  // core.setSecret(slackWebhook);
+  // Mask values when logging
+  _actions_core__WEBPACK_IMPORTED_MODULE_0__.setSecret(token);
+  _actions_core__WEBPACK_IMPORTED_MODULE_0__.setSecret(slackWebhook);
 
   const repoOwner = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.owner;
   const repo = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context.repo.repo;
