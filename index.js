@@ -1,36 +1,33 @@
 const core = require("@actions/core");
-const github = require("@actions/github");
+// const github = require("@actions/github"); // Not sure if we need this if using API
+const { Octokit } = require("@octokit/core");
 
-try {
-  // const [repoOwner, repo] = getInput("repo").split("/");
-  // const wfRunId = getInput("run-id");
+async function run() {
+  const token = core.getInput("token");
+  const [repoOwner, repo] = core.getInput("repo").split("/");
+  const wfRunId = core.getInput("run-id");
   const slackWebhook = core.getInput("slack-webhook");
 
-  console.log("Core: ", core);
-  console.log("Github: ", github);
+  const wfRunUrl = `/repos/${repoOwner}/${repo}/actions/runs/${wfRunId}`;
 
-  // Parse workflow run data
-  const commitAuthor = github.context.actor;
-  const avatarUrl = github.context.payload.sender.avatar_url;
-  const repositoryUrl = github.context.payload.repository.url;
-  const repositoryName = github.context.payload.repository.full_name;
-  const branchName = github.context.ref.split("/").pop();
-  const branchUrl = repositoryUrl + "/tree/" + branchName;
-  const commitSha = github.context.sha;
-  const commitUrl = repositoryUrl + "/commit/" + commitSha;
-  const commitMessage = github.context.payload.head_commit.message;
+  const octokit = new Octokit({ auth: token });
 
-  console.log("------------------");
-  console.log("Commit Author: ", commitAuthor);
-  console.log("Avatar URL: ", avatarUrl);
-  console.log("Repository URL: ", repositoryUrl);
-  console.log("Repository Name: ", repositoryName);
-  console.log("Branch Name: ", branchName);
-  console.log("Branch URL: ", branchUrl);
-  console.log("Commit SHA: ", commitSha);
-  console.log("Commit URL: ", commitUrl);
-  console.log("Commit Message: ", commitMessage);
+  // Use Github API to fetch workflow run & jobs data
+  const wfRun = await octokit.request(`GET ${wfRunUrl}`);
+  const jobsResponse = await octokit.request(`GET ${wfRunUrl}/jobs`);
 
+  console.log(wfRun);
+  console.log(jobsResponse);
+
+  // const commitAuthor = wfRun.data.actor.login;
+  // const avatarUrl = wfRun.data.actor.avatar_url;
+  // const repositoryUrl = wfRun.data.repository.html_url;
+  // const repositoryName = wfRun.data.repository.full_name;
+  // const branchName = wfRun.data.head_branch;
+  // const branchUrl = repositoryUrl + "/tree/" + branchName;
+  // const commitSha = wfRun.data.head_sha;
+  // const commitUrl = repositoryUrl + "/commit/" + commitSha;
+  // const commitMessage = wfRun.data.display_title;
   // const failedJobs = jobsResponse.data.jobs.filter(
   //   (job) => job.status == "completed" && job.conclusion == "failure"
   // );
@@ -103,7 +100,6 @@ try {
   // xhr.open("POST", slackWebhook, true);
   // xhr.setRequestHeader("Content-Type", "application/json");
   // xhr.send(JSON.stringify(slackMessage));
-} catch (error) {
-  core.setFailed(error.message);
-  console.log(error.message);
 }
+
+run().catch((error) => core.setFailed(error.message));
