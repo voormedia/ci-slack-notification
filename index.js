@@ -16,8 +16,6 @@ async function run() {
   // Authenticate with GitHub
   const octokit = getOctokit(token);
 
-  console.log(octokit);
-
   // Fetch workflow run data
   const { data: wfRun } = await octokit.rest.actions.getWorkflowRun({
     owner: repoOwner,
@@ -37,16 +35,16 @@ async function run() {
   console.log(jobsResponse);
 
   // Extract the data we need for creating the Slack message
-  const commitAuthor = wfRun.data.actor.login;
-  const avatarUrl = wfRun.data.actor.avatar_url;
-  const repositoryUrl = wfRun.data.repository.html_url;
-  const repositoryName = wfRun.data.repository.full_name;
-  const branchName = wfRun.data.head_branch;
+  const commitAuthor = wfRun.actor.login;
+  const avatarUrl = wfRun.actor.avatar_url;
+  const repositoryUrl = wfRun.repository.html_url;
+  const repositoryName = wfRun.repository.full_name;
+  const branchName = wfRun.head_branch;
   const branchUrl = repositoryUrl + "/tree/" + branchName;
-  const commitSha = wfRun.data.head_sha;
+  const commitSha = wfRun.head_sha;
   const commitUrl = repositoryUrl + "/commit/" + commitSha;
-  const commitMessage = wfRun.data.display_title;
-  const failedJobs = jobsResponse.data.jobs.filter(
+  const commitMessage = wfRun.display_title;
+  const failedJobs = jobsResponse.jobs.filter(
     (job) => job.status == "completed" && job.conclusion == "failure"
   );
   const failedJobsWithLinks = failedJobs
