@@ -1,4 +1,3 @@
-// const github = require("@actions/github"); // Not sure if we need this if using API
 import * as core from "@actions/core";
 import { context, getOctokit } from "@actions/github";
 
