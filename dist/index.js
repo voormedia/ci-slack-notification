@@ -12971,13 +12971,29 @@ async function run() {
     .map((job) => `<${job.html_url}|${job.name}>`)
     .join(", ");
 
+  const successEmojis = [
+    ":party:",
+    ":partyparrot:",
+    ":tada:",
+    ":rocket:",
+    ":dubstepp:",
+    ":trophy:",
+    ":champagne:",
+  ];
+
   // Create Slack message
   // For debugging: https://app.slack.com/block-kit-builder/
   const slackMessage = {
     // We use attachments to keep the color bar on the left side
     attachments: [
       {
-        color: `${failedJobs.length == 0 ? "good" : "danger"}`,
+        color: `${
+          failedJobs.length == 0
+            ? "#5CB589" // Green
+            : repositoryName.includes("bouwens")
+            ? "#D8232A" // Bouwens' red (for Emiel)
+            : "#960018" // Carmine red
+        }`,
         blocks: [
           // Author
           {
@@ -12986,7 +13002,9 @@ async function run() {
               {
                 type: "image",
                 image_url: avatarUrl,
-                alt_text: "cute cat",
+                alt_text: commitAuthor.includes("emiel")
+                  ? "Just Emiel..."
+                  : "Cute cat",
               },
               {
                 type: "mrkdwn",
@@ -12999,7 +13017,7 @@ async function run() {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `<${repositoryUrl}|*${repositoryName}*>`,
+              text: `*${repositoryName}*`,
             },
           },
           // Branch
@@ -13015,7 +13033,10 @@ async function run() {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `*Commit:* ${commitMessage} (<${commitUrl}|${commitSha}>)`,
+              text: `*Commit:* ${commitMessage} (<${commitUrl}|${commitSha.slice(
+                0,
+                7
+              )}>)`,
             },
           },
           // Failled jobs (if any)
@@ -13025,7 +13046,11 @@ async function run() {
               type: "mrkdwn",
               text:
                 failedJobs.length == 0
-                  ? "All tests passed :rocket:"
+                  ? `All tests passed ${
+                      successEmojis[
+                        Math.floor(Math.random() * successEmojis.length)
+                      ]
+                    }`
                   : `*Failed job${
                       failedJobs.length > 1 ? "s" : ""
                     }:* ${failedJobsWithLinks}`,
