@@ -50,7 +50,7 @@ async function run() {
     .join(", ");
 
   const successEmojis = [
-    ":party:",
+    ":partying_face:",
     ":partyparrot:",
     ":tada:",
     ":rocket:",
