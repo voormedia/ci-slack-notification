@@ -40,6 +40,7 @@ async function run() {
   const branchName = wfRun.head_branch;
   const branchUrl = repositoryUrl + "/tree/" + branchName;
   const commitSha = wfRun.head_sha;
+  const shortCommit = commitSha.slice(0, 7);
   const commitUrl = repositoryUrl + "/commit/" + commitSha;
   const commitMessage = wfRun.display_title;
   const failedJobs = jobsResponse.jobs.filter(
@@ -49,36 +50,67 @@ async function run() {
     .map((job) => `<${job.html_url}|${job.name}>`)
     .join(", ");
 
-  const successEmojis = [
-    ":partying_face:",
-    ":sunglasses:",
-    ":partyparrot:",
-    ":heart_hands:",
-    ":tada:",
-    ":rocket:",
-    ":trophy:",
-    ":first_place_medal:",
-    ":balloon:",
-    ":confetti_ball:",
-    ":star_struck:",
-    ":man_dancing:",
-    ":man_in_lotus_position:",
-    ":woman_in_lotus_position:",
-    ":beers:",
-    ":clinking_glasses:",
-    ":sunny:",
-    ":ribbon:",
-    ":crown:",
-    ":female_superhero:",
-    ":superhero:",
-    ":heart_eyes:",
-    ":heart_eyes_cat:",
-    ":dancer:",
-    ":sparkles:",
-    ":champagne:",
-  ];
+  const fetchEmoji = (repositoryName) => {
+    const successEmojis = [
+      ":partying_face:",
+      ":sunglasses:",
+      ":partyparrot:",
+      ":heart_hands:",
+      ":tada:",
+      ":rocket:",
+      ":trophy:",
+      ":first_place_medal:",
+      ":balloon:",
+      ":confetti_ball:",
+      ":star_struck:",
+      ":man_dancing:",
+      ":man_in_lotus_position:",
+      ":woman_in_lotus_position:",
+      ":beers:",
+      ":clinking_glasses:",
+      ":sunny:",
+      ":ribbon:",
+      ":crown:",
+      ":female_superhero:",
+      ":superhero:",
+      ":heart_eyes:",
+      ":heart_eyes_cat:",
+      ":dancer:",
+      ":sparkles:",
+      ":mario_luigi_dance:",
+      ":champagne:",
+    ];
 
-  const shortCommit = commitSha.slice(0, 7)
+    const customer = repositoryName.split("/")[1].split("-")[0];
+
+    switch (customer) {
+      case "alpacards":
+        successEmojis.push(":happy_bas:");
+        break;
+      case "bouwens":
+        successEmojis.push(":happy_emiel:");
+        break;
+      case "dienst":
+      case "omron":
+        successEmojis.push(":happy_emiel:");
+        successEmojis.push(":happy_mattijs:");
+        successEmojis.push(":happy_mattijs:");
+        break;
+      case "pgs":
+        successEmojis.push(":happy_bas:");
+        successEmojis.push(":happy_rolf:");
+        break;
+      case "tiny":
+        successEmojis.push(":happy_bouke:");
+        successEmojis.push(":happy_rolf:");
+        break;
+      case "taxology":
+        successEmojis.push(":happy_rolf:");
+        break;
+    }
+
+    return successEmojis[Math.floor(Math.random() * successEmojis.length)];
+  };
 
   // Create Slack message
   // For debugging: https://app.slack.com/block-kit-builder/
@@ -126,11 +158,7 @@ async function run() {
               type: "mrkdwn",
               text:
                 failedJobs.length == 0
-                  ? `All jobs succeeded ${
-                      successEmojis[
-                        Math.floor(Math.random() * successEmojis.length)
-                      ]
-                    }`
+                  ? `All jobs succeeded ${fetchEmoji(repositoryName)}`
                   : `*Failed job${
                       failedJobs.length > 1 ? "s" : ""
                     }:* ${failedJobsWithLinks}`,
