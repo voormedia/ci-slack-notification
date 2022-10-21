@@ -78,6 +78,8 @@ async function run() {
     ":champagne:",
   ];
 
+  const shortCommit = commitSha.slice(0, 7)
+
   // Create Slack message
   // For debugging: https://app.slack.com/block-kit-builder/
   const slackMessage = {
@@ -109,23 +111,12 @@ async function run() {
               },
             ],
           },
-          // Repository + branch
+          // Repository + branch + commit
           {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `*${repositoryName}* (<${branchUrl}|${branchName}>)`,
-            },
-          },
-          // Commit
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `${commitMessage} (<${commitUrl}|${commitSha.slice(
-                0,
-                7
-              )}>)`,
+              text: `*${repositoryName}* (<${branchUrl}|${branchName}>)\n${commitMessage} (<${commitUrl}|${shortCommit}>)`,
             },
           },
           // Failled jobs (if any)
