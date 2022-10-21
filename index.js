@@ -51,11 +51,30 @@ async function run() {
 
   const successEmojis = [
     ":partying_face:",
+    ":sunglasses:",
     ":partyparrot:",
+    ":heart_hands:",
     ":tada:",
     ":rocket:",
-    ":dubstepp:",
     ":trophy:",
+    ":first_place_medal:",
+    ":balloon:",
+    ":confetti_ball:",
+    ":star_struck:",
+    ":man_dancing:",
+    ":man_in_lotus_position:",
+    ":woman_in_lotus_position:",
+    ":beers:",
+    ":clinking_glasses:",
+    ":sunny:",
+    ":ribbon:",
+    ":crown:",
+    ":female_superhero:",
+    ":superhero:",
+    ":heart_eyes:",
+    ":heart_eyes_cat:",
+    ":dancer:",
+    ":sparkles:",
     ":champagne:",
   ];
 
@@ -90,20 +109,12 @@ async function run() {
               },
             ],
           },
-          // Repository
+          // Repository + branch
           {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `*${repositoryName}*`,
-            },
-          },
-          // Branch
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text: `*Branch:* <${branchUrl}|${branchName}>`,
+              text: `*${repositoryName}* (<${branchUrl}|${branchName}>)`,
             },
           },
           // Commit
@@ -111,7 +122,7 @@ async function run() {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `*Commit:* ${commitMessage} (<${commitUrl}|${commitSha.slice(
+              text: `${commitMessage} (<${commitUrl}|${commitSha.slice(
                 0,
                 7
               )}>)`,
@@ -124,7 +135,7 @@ async function run() {
               type: "mrkdwn",
               text:
                 failedJobs.length == 0
-                  ? `All tests passed ${
+                  ? `All jobs succeeded ${
                       successEmojis[
                         Math.floor(Math.random() * successEmojis.length)
                       ]

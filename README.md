@@ -36,4 +36,4 @@ The action itself is defined in `index.js`. It uses a Github octokit to retrieve
 Github doesn't like when we push node modules separately from index.js, so we better compile
 everything in a single distribution file. For that, before pushing to the repo we have to run:
 
-`ncc build index.js --license licenses.txt`
+`npm run build`
