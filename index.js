@@ -36,7 +36,7 @@ async function run() {
   const commitAuthor = wfRun.actor.login;
   const avatarUrl = wfRun.actor.avatar_url;
   const repositoryUrl = wfRun.repository.html_url;
-  const repositoryName = wfRun.repository.full_name;
+  const project = wfRun.repository.full_name.split("/")[1];
   const branchName = wfRun.head_branch;
   const branchUrl = repositoryUrl + "/tree/" + branchName;
   const commitSha = wfRun.head_sha;
@@ -50,7 +50,7 @@ async function run() {
     .map((job) => `<${job.html_url}|${job.name}>`)
     .join(", ");
 
-  const fetchEmoji = (repositoryName) => {
+  const fetchEmoji = (project) => {
     const successEmojis = [
       ":partying_face:",
       ":sunglasses:",
@@ -81,7 +81,7 @@ async function run() {
       ":champagne:",
     ];
 
-    const customer = repositoryName.split("/")[1].split("-")[0];
+    const customer = project.split("-")[0];
 
     switch (customer) {
       case "alpacards":
@@ -121,7 +121,7 @@ async function run() {
         color: `${
           failedJobs.length == 0
             ? "#5CB589" // Green
-            : repositoryName.includes("bouwens")
+            : project.includes("bouwens")
             ? "#D8232A" // Bouwens' red (for Emiel)
             : "#960018" // Carmine red
         }`,
@@ -148,7 +148,7 @@ async function run() {
             type: "section",
             text: {
               type: "mrkdwn",
-              text: `*${repositoryName}* (<${branchUrl}|${branchName}>)\n${commitMessage} (<${commitUrl}|${shortCommit}>)`,
+              text: `*${project}* (<${branchUrl}|${branchName}>)\n${commitMessage} (<${commitUrl}|${shortCommit}>)`,
             },
           },
           // Failled jobs (if any)
@@ -158,7 +158,7 @@ async function run() {
               type: "mrkdwn",
               text:
                 failedJobs.length == 0
-                  ? `All jobs succeeded ${fetchEmoji(repositoryName)}`
+                  ? `All jobs succeeded ${fetchEmoji(project)}`
                   : `*Failed job${
                       failedJobs.length > 1 ? "s" : ""
                     }:* ${failedJobsWithLinks}`,
