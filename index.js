@@ -53,30 +53,23 @@ async function run() {
   const fetchEmoji = (project) => {
     const successEmojis = [
       ":partying_face:",
-      ":sunglasses:",
       ":partyparrot:",
-      ":heart_hands:",
       ":tada:",
       ":rocket:",
       ":trophy:",
       ":first_place_medal:",
       ":balloon:",
       ":confetti_ball:",
-      ":star_struck:",
       ":man_dancing:",
       ":man_in_lotus_position:",
       ":woman_in_lotus_position:",
       ":beers:",
       ":clinking_glasses:",
       ":sunny:",
-      ":ribbon:",
       ":crown:",
       ":female_superhero:",
       ":superhero:",
-      ":heart_eyes:",
-      ":heart_eyes_cat:",
       ":dancer:",
-      ":sparkles:",
       ":mario_luigi_dance:",
       ":champagne:",
     ];
@@ -86,8 +79,12 @@ async function run() {
     switch (customer) {
       case "alpacards":
         successEmojis.push(":happy_bas:");
+        successEmojis.push(":happy_bas:");
+        successEmojis.push(":happy_bas:");
         break;
       case "bouwens":
+        successEmojis.push(":happy_emiel:");
+        successEmojis.push(":happy_emiel:");
         successEmojis.push(":happy_emiel:");
         break;
       case "dienst":
@@ -105,6 +102,7 @@ async function run() {
         successEmojis.push(":happy_rolf:");
         break;
       case "taxology":
+        successEmojis.push(":happy_rolf:");
         successEmojis.push(":happy_rolf:");
         break;
     }
