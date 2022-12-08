@@ -12973,6 +12973,29 @@ async function run() {
     .join(", ");
 
   const fetchEmoji = (project) => {
+    const xmasEmojis = [
+      ":christmas_tree:",
+      ":gift:",
+      ":santa:",
+      ":mrs_claus:",
+      ":snowman:",
+      ":snowflake:",
+      ":bell:",
+      ":star:",
+      ":santa_bas:",
+      ":santa_bouke:",
+      ":santa_mattijs:",
+      ":santa_rolf:",
+      ":xmas_emiel:",
+    ];
+
+    const today = new Date();
+    const xmasStart = new Date(today.getFullYear(), 11, 19);
+    const xmasEnd = new Date(today.getFullYear(), 11, 26);
+    if (today > xmasStart && today < xmasEnd) {
+      return xmasEmojis[Math.floor(Math.random() * xmasEmojis.length)];
+    }
+
     const successEmojis = [
       ":partying_face:",
       ":partyparrot:",
