@@ -139,7 +139,7 @@ async function run() {
     // We use attachments to keep the color bar on the left side
     attachments: [
       {
-        fallback: `${failedJobs.length == 0 ? "✅" : "❌"} ${project} (${branchName}) \n${commitAuthor} - ${commitMessage}`,
+        fallback: `${failedJobs.length == 0 ? "✅" : "❌"} ${project} (${branchName}) - ${commitAuthor}: ${commitMessage}`,
         color: `${
           failedJobs.length == 0
             ? "#5CB589" // Green
