@@ -13008,14 +13008,6 @@ async function run() {
     })
   }
 
-  sections.push({
-    type: "section",
-    text: {
-      type: "mrkdwn",
-      text: "Debug output: ```" + JSON.stringify(jobsResponse) + "```",
-    },
-  })
-
   const status = failedJobs.length > 0 ? "failed" : cancelledJobs.length > 0 ? "cancelled" : successfulJobs.length > 0 ? "success" : undefined
 
   // Everything was skipped; don't bother mentioning it.
