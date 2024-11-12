@@ -43,95 +43,51 @@ async function run() {
   const shortCommit = commitSha.slice(0, 7);
   const commitUrl = repositoryUrl + "/commit/" + commitSha;
   const commitMessage = wfRun.display_title;
-  const failedJobs = jobsResponse.jobs.filter(
-    (job) => job.status == "completed" && job.conclusion == "failure"
-  );
-  const failedJobsWithLinks = failedJobs
-    .map((job) => `<${job.html_url}|${job.name}>`)
-    .join(", ");
 
-  const fetchEmoji = (project) => {
-    const xmasEmojis = [
-      ":christmas_tree:",
-      ":gift:",
-      ":santa:",
-      ":mrs_claus:",
-      ":snowman:",
-      ":snowflake:",
-      ":bell:",
-      ":star:",
-      ":santa_bas:",
-      ":santa_bouke:",
-      ":santa_mattijs:",
-      ":santa_rolf:",
-      ":xmas_emiel:",
-    ];
+  const completedJobs = jobsResponse.jobs.filter(job => job.status == "completed")
 
-    const today = new Date();
-    const xmasStart = new Date(today.getFullYear(), 11, 19);
-    const xmasEnd = new Date(today.getFullYear(), 11, 26);
-    if (today > xmasStart && today < xmasEnd) {
-      return xmasEmojis[Math.floor(Math.random() * xmasEmojis.length)];
-    }
+  const successfulJobs = completedJobs.filter(job => job.conclusion == "success")
+  const skippedJobs = completedJobs.filter(job => job.conclusion == "skipped")
+  const failedJobs = completedJobs.filter(job => job.conclusion == "failure")
+  const cancelledJobs = completedJobs.filter(job => job.conclusion == "cancelled")
 
-    const successEmojis = [
-      ":partying_face:",
-      ":partyparrot:",
-      ":tada:",
-      ":rocket:",
-      ":trophy:",
-      ":first_place_medal:",
-      ":balloon:",
-      ":confetti_ball:",
-      ":man_dancing:",
-      ":man_in_lotus_position:",
-      ":woman_in_lotus_position:",
-      ":beers:",
-      ":clinking_glasses:",
-      ":sunny:",
-      ":crown:",
-      ":female_superhero:",
-      ":superhero:",
-      ":dancer:",
-      ":mario_luigi_dance:",
-      ":champagne:",
-    ];
+  const jobsWithLink = jobs => jobs.map(job => `<${job.html_url}|${job.name}>`).join(", ")
 
-    const customer = project.split("-")[0];
+  const sections = []
 
-    switch (customer) {
-      case "alpacards":
-        successEmojis.push(":happy_bas:");
-        successEmojis.push(":happy_bas:");
-        successEmojis.push(":happy_bas:");
-        break;
-      case "bouwens":
-        successEmojis.push(":happy_emiel:");
-        successEmojis.push(":happy_emiel:");
-        successEmojis.push(":happy_emiel:");
-        break;
-      case "dienst":
-      case "omron":
-        successEmojis.push(":happy_emiel:");
-        successEmojis.push(":happy_mattijs:");
-        successEmojis.push(":happy_mattijs:");
-        break;
-      case "pgs":
-        successEmojis.push(":happy_bas:");
-        successEmojis.push(":happy_rolf:");
-        break;
-      case "tiny":
-        successEmojis.push(":happy_bouke:");
-        successEmojis.push(":happy_rolf:");
-        break;
-      case "taxology":
-        successEmojis.push(":happy_rolf:");
-        successEmojis.push(":happy_rolf:");
-        break;
-    }
+  if (failedJobs.length > 0) {
+    sections.push({
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*Failed:* ${jobsWithLink(failedJobs)}`,
+      },
+    })
+  }
 
-    return successEmojis[Math.floor(Math.random() * successEmojis.length)];
-  };
+  if (cancelledJobs.length > 0) {
+    sections.push({
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `*Cancelled:* ${jobsWithLink(cancelledJobs)}`,
+      },
+    })
+  }
+
+  if (successfulJobs.length > 0 && failedJobs.length == 0 && cancelledJobs.length == 0) {
+    const skipped = skippedJobs.length > 0 ? ` (${skippedJobs.length} skipped)` : ""
+
+    sections.push({
+      type: "section",
+      text: {
+        type: "mrkdwn",
+        text: `All jobs succeeded${skipped} ${fetchEmoji(project)}`,
+      },
+    })
+  }
+
+  const status = failedJobs.length > 0 ? "failed" : cancelledJobs.length > 0 ? "cancelled" : "success"
 
   // Create Slack message
   // For debugging: https://app.slack.com/block-kit-builder/
@@ -139,14 +95,8 @@ async function run() {
     // We use attachments to keep the color bar on the left side
     attachments: [
       {
-        fallback: `${failedJobs.length == 0 ? "✅" : "❌"} ${project} (${branchName}) - ${commitAuthor}: ${commitMessage}`,
-        color: `${
-          failedJobs.length == 0
-            ? "#5CB589" // Green
-            : project.includes("bouwens")
-            ? "#D8232A" // Bouwens' red (for Emiel)
-            : "#960018" // Carmine red
-        }`,
+        fallback: `${statusMoji[status]} ${project} (${branchName}) - ${commitAuthor}: ${commitMessage}`,
+        color: statusColor[status],
         blocks: [
           // Author
           {
@@ -155,9 +105,7 @@ async function run() {
               {
                 type: "image",
                 image_url: avatarUrl,
-                alt_text: commitAuthor.includes("emiel")
-                  ? "Just Emiel..."
-                  : "Cute cat",
+                alt_text: "Cute cat",
               },
               {
                 type: "mrkdwn",
@@ -173,19 +121,7 @@ async function run() {
               text: `*${project}* (<${branchUrl}|${branchName}>)\n${commitMessage} (<${commitUrl}|${shortCommit}>)`,
             },
           },
-          // Failled jobs (if any)
-          {
-            type: "section",
-            text: {
-              type: "mrkdwn",
-              text:
-                failedJobs.length == 0
-                  ? `All jobs succeeded ${fetchEmoji(project)}`
-                  : `*Failed job${
-                      failedJobs.length > 1 ? "s" : ""
-                    }:* ${failedJobsWithLinks}`,
-            },
-          },
+          ...sections,
         ],
       },
     ],
@@ -196,6 +132,86 @@ async function run() {
 
   // Send message to Slack
   await new IncomingWebhook(slackWebhook).send(slackMessage);
+}
+
+const fetchEmoji = (project) => {
+  const xmasEmojis = [
+    ":christmas_tree:",
+    ":gift:",
+    ":santa:",
+    ":mrs_claus:",
+    ":snowman:",
+    ":snowflake:",
+    ":bell:",
+    ":star:",
+    ":santa_bas:",
+    ":santa_bouke:",
+    ":santa_mattijs:",
+    ":santa_rolf:",
+    ":xmas_emiel:",
+  ]
+
+  const today = new Date();
+  const xmasStart = new Date(today.getFullYear(), 11, 19);
+  const xmasEnd = new Date(today.getFullYear(), 11, 26);
+  if (today > xmasStart && today < xmasEnd) {
+    return xmasEmojis[Math.floor(Math.random() * xmasEmojis.length)]
+  }
+
+  const successEmojis = [
+    ":partying_face:",
+    ":partyparrot:",
+    ":tada:",
+    ":rocket:",
+    ":trophy:",
+    ":first_place_medal:",
+    ":balloon:",
+    ":confetti_ball:",
+    ":man_dancing:",
+    ":man_in_lotus_position:",
+    ":woman_in_lotus_position:",
+    ":beers:",
+    ":clinking_glasses:",
+    ":sunny:",
+    ":crown:",
+    ":female_superhero:",
+    ":superhero:",
+    ":dancer:",
+    ":mario_luigi_dance:",
+    ":champagne:",
+  ]
+
+  const customer = project.split("-")[0]
+
+  switch (customer) {
+    case "dienst":
+    case "omron":
+      successEmojis.push(":happy_mattijs:");
+      successEmojis.push(":happy_mattijs:");
+      break;
+    case "pgs":
+      successEmojis.push(":happy_bouke:");
+      successEmojis.push(":happy_bouke:");
+      break;
+    case "taxology":
+      successEmojis.push(":happy_rolf:");
+      successEmojis.push(":happy_rolf:");
+      break;
+  }
+
+  return successEmojis[Math.floor(Math.random() * successEmojis.length)];
+}
+
+const statusMoji = {
+  failed: "❌",
+  cancelled: "🚫",
+  success: "✅",
+}
+
+const statusColor = {
+  failed: "#960018",
+  cancelled: "#A9A9A9",
+  success: "#5CB589",
 }
 
 run().catch((error) => {
