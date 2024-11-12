@@ -12966,11 +12966,11 @@ async function run() {
   const commitUrl = repositoryUrl + "/commit/" + commitSha;
   const commitMessage = wfRun.display_title;
 
-  const allJobs = jobsResponse.jobs
-  const successfulJobs = allJobs.filter(job => job.conclusion == "success")
-  const skippedJobs = allJobs.filter(job => job.conclusion == "skipped")
-  const failedJobs = allJobs.filter(job => job.conclusion == "failure")
-  const cancelledJobs = allJobs.filter(job => job.conclusion == "cancelled")
+  const completedJobs = jobsResponse.jobs.filter(job => job.status == "completed")
+  const successfulJobs = completedJobs.filter(job => job.conclusion == "success")
+  const skippedJobs = completedJobs.filter(job => job.conclusion == "skipped")
+  const failedJobs = completedJobs.filter(job => job.conclusion == "failure")
+  const cancelledJobs = completedJobs.filter(job => job.conclusion == "cancelled")
 
   const jobsWithLink = jobs => jobs.map(job => `<${job.html_url}|${job.name}>`).join(", ")
 
