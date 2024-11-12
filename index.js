@@ -44,6 +44,7 @@ async function run() {
   const commitUrl = repositoryUrl + "/commit/" + commitSha;
   const commitMessage = wfRun.display_title;
 
+  console.log(jobsResponse)
   const completedJobs = jobsResponse.jobs.filter(job => job.status == "completed")
 
   const successfulJobs = completedJobs.filter(job => job.conclusion == "success")
