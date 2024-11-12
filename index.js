@@ -87,7 +87,10 @@ async function run() {
     })
   }
 
-  const status = failedJobs.length > 0 ? "failed" : cancelledJobs.length > 0 ? "cancelled" : "success"
+  const status = failedJobs.length > 0 ? "failed" : cancelledJobs.length > 0 ? "cancelled" : successfulJobs.length > 0 ? "success" : undefined
+
+  // Everything was skipped; don't bother mentioning it.
+  if (status === undefined) return
 
   // Create Slack message
   // For debugging: https://app.slack.com/block-kit-builder/
