@@ -42,7 +42,19 @@ async function run() {
   const commitSha = wfRun.head_sha;
   const shortCommit = commitSha.slice(0, 7);
   const commitUrl = repositoryUrl + "/commit/" + commitSha;
-  const commitMessage = wfRun.display_title;
+  
+  // Get commit message - use display_title first, but if it's a PR, fetch the actual commit message
+  let commitMessage = wfRun.display_title;
+  
+  // If this is a pull request event, fetch the actual commit message instead of the PR title
+  if (wfRun.event === 'pull_request' || wfRun.event === 'pull_request_target') {
+    const { data: commitData } = await octokit.rest.git.getCommit({
+      owner: repoOwner,
+      repo: repo,
+      commit_sha: commitSha,
+    });
+    commitMessage = commitData.message.split('\n')[0]; // Use only the first line (commit subject)
+  }
 
   const completedJobs = jobsResponse.jobs.filter(job => job.status == "completed")
   const successfulJobs = completedJobs.filter(job => job.conclusion == "success")
